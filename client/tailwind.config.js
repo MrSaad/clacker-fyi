@@ -11,6 +11,7 @@ export default {
           'system-ui',
           'sans-serif',
         ],
+        space: ['"Space Grotesk"', 'sans-serif'],
       },
       colors: {
         // Solarized light palette

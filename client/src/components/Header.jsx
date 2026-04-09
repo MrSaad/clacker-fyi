@@ -27,8 +27,18 @@ export default function Header({ value, onChange, onOpenFilters }) {
               <line x1="3" y1="18" x2="21" y2="18" />
             </svg>
           </button>
-          <h1 className="text-2xl font-semibold tracking-tight text-sol-base01 md:text-3xl">
-            r/CustomKeyboards Browser
+          <h1 className="font-space flex items-center text-2xl font-semibold text-sol-base01 md:text-3xl">
+            <span className="flex gap-[3px]">
+              {'clacker'.split('').map((letter, i) => (
+                <span
+                  key={i}
+                  className="inline-flex items-center justify-center w-[1.4em] h-[1.4em] bg-sol-base2 border border-sol-base1 border-b-[4px] rounded-lg text-sol-base02 pb-[2px] shadow-sm"
+                >
+                  {letter}
+                </span>
+              ))}
+            </span>
+            <span className="ml-2 text-sol-base01">.fyi</span>
           </h1>
         </div>
         <div className="md:ml-auto md:w-[420px]">

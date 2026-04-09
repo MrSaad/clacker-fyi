@@ -1,4 +1,4 @@
-# Keyboard Part Picker
+# clacker.fyi
 
 A faceted browser for r/CustomKeyboards top builds. Express API + Vite/React/Tailwind frontend.
 
@@ -15,7 +15,7 @@ npm run dev
 ## Layout
 
 ```
-keyboard-part-picker/
+clacker-fyi/
 ├── server/   Express, serves /api/keyboards from server/data/keyboards.json
 ├── client/   Vite + React + Tailwind
 └── ingest/   Phase 1 data pipeline (Reddit fetch + extraction + keyboards.json)

@@ -11,7 +11,7 @@ import time
 import urllib.request
 import urllib.error
 
-USER_AGENT = "keyboard-part-picker/0.1 by saad"
+USER_AGENT = "clacker-fyi/0.1 by saad"
 LISTING_URL = "https://www.reddit.com/r/customkeyboards/top.json?t=all&limit=100"
 COMMENTS_URL = "https://www.reddit.com/comments/{id}.json?limit=50&depth=2&sort=top"
 OUTPUT_PATH = "raw_posts.json"

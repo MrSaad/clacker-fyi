@@ -1,0 +1,25 @@
+# dependencies
+node_modules/
+
+# build output
+client/dist/
+
+# logs
+*.log
+npm-debug.log*
+
+# env / secrets
+.env
+.env.*
+!.env.example
+
+# editor / OS
+.DS_Store
+.idea/
+.vscode/
+*.swp
+
+# python (ingest pipeline)
+__pycache__/
+*.pyc
+.venv/

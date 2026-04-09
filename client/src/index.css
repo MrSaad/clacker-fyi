@@ -1,0 +1,29 @@
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+
+html,
+body,
+#root {
+  height: 100%;
+}
+
+body {
+  @apply bg-sol-base3 text-sol-base01 font-sans antialiased;
+}
+
+input[type='search']::-webkit-search-cancel-button {
+  display: none;
+}
+
+/* Slim scrollbar for sidebar */
+.fancy-scroll::-webkit-scrollbar {
+  width: 6px;
+}
+.fancy-scroll::-webkit-scrollbar-track {
+  background: transparent;
+}
+.fancy-scroll::-webkit-scrollbar-thumb {
+  background: rgba(147, 161, 161, 0.4);
+  border-radius: 3px;
+}

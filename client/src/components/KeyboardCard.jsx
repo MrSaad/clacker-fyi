@@ -1,5 +1,5 @@
 export default function KeyboardCard({ keyboard, onClick }) {
-  const img = keyboard.image_urls?.[0];
+  const img = keyboard.thumbnail_url || keyboard.image_urls?.[0];
   return (
     <button
       type="button"

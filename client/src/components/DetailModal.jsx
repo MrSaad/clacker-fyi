@@ -59,12 +59,24 @@ export default function DetailModal({ keyboard, onClose }) {
           type="button"
           onClick={onClose}
           aria-label="Close"
-          className="absolute right-3 top-3 z-10 flex h-7 w-7 items-center justify-center rounded text-sol-base01 hover:bg-sol-base2"
+          className="absolute right-3 top-3 z-10 hidden h-7 w-7 items-center justify-center rounded text-sol-base01 hover:bg-sol-base2 md:flex"
         >
           ✕
         </button>
 
-        <div className="grid gap-6 p-6 md:grid-cols-[1.15fr_1fr]">
+        {/* Mobile-only close bar */}
+        <div className="flex justify-end border-b border-sol-base2 px-3 py-2 md:hidden">
+          <button
+            type="button"
+            onClick={onClose}
+            aria-label="Close"
+            className="flex h-8 w-8 items-center justify-center rounded text-sol-base01 hover:bg-sol-base2"
+          >
+            ✕
+          </button>
+        </div>
+
+        <div className="grid gap-6 p-4 md:grid-cols-[1.15fr_1fr] md:p-6">
           {/* Gallery */}
           <div className="flex flex-col gap-3">
             <div className="overflow-hidden rounded border border-sol-base2 bg-sol-base2">
@@ -109,7 +121,7 @@ export default function DetailModal({ keyboard, onClose }) {
                     href={`https://reddit.com/u/${keyboard.author}`}
                     target="_blank"
                     rel="noreferrer"
-                    className="text-sol-blue hover:underline"
+                    className="font-medium text-reddit hover:underline"
                   >
                     u/{keyboard.author}
                   </a>
@@ -119,7 +131,7 @@ export default function DetailModal({ keyboard, onClose }) {
                   href={keyboard.permalink}
                   target="_blank"
                   rel="noreferrer"
-                  className="ml-auto inline-flex items-center gap-1 rounded border border-sol-blue bg-sol-blue/10 px-2 py-0.5 text-[11px] text-sol-blue transition hover:bg-sol-blue/20"
+                  className="ml-auto inline-flex items-center gap-1 rounded border border-reddit bg-reddit/10 px-2 py-0.5 text-[11px] text-reddit transition hover:bg-reddit/20"
                 >
                   View original post on Reddit →
                 </a>

@@ -13,6 +13,25 @@ export default function App() {
   const [searchInput, setSearchInput] = useState('');
   const [selections, setSelections] = useState(() => emptySelections());
   const [selected, setSelected] = useState(null);
+  const [filtersOpen, setFiltersOpen] = useState(false);
+
+  useEffect(() => {
+    if (!filtersOpen) return;
+    const prev = document.body.style.overflow;
+    document.body.style.overflow = 'hidden';
+    return () => {
+      document.body.style.overflow = prev;
+    };
+  }, [filtersOpen]);
+
+  useEffect(() => {
+    if (!filtersOpen) return;
+    const onKey = (e) => {
+      if (e.key === 'Escape') setFiltersOpen(false);
+    };
+    window.addEventListener('keydown', onKey);
+    return () => window.removeEventListener('keydown', onKey);
+  }, [filtersOpen]);
 
   useEffect(() => {
     fetchKeyboards()
@@ -65,13 +84,19 @@ export default function App() {
 
   return (
     <div className="flex min-h-full flex-col">
-      <Header value={searchInput} onChange={setSearchInput} />
+      <Header
+        value={searchInput}
+        onChange={setSearchInput}
+        onOpenFilters={() => setFiltersOpen(true)}
+      />
       <main className="mx-auto flex w-full max-w-[1600px] flex-1 gap-6 px-4 py-4 md:px-6">
         <FacetSidebar
           facetIndex={facetIndex}
           selections={selections}
           onToggle={toggleFacet}
           onClear={clearAll}
+          mobileOpen={filtersOpen}
+          onMobileClose={() => setFiltersOpen(false)}
         />
         <div className="min-w-0 flex-1">
           {keyboards == null ? (

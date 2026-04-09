@@ -32,6 +32,7 @@ export default {
           cyan:    '#2aa198',
           green:   '#859900',
         },
+        reddit: '#ff4500',
       },
     },
   },

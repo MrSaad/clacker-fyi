@@ -17,8 +17,22 @@ import urllib.error
 import urllib.request
 
 USER_AGENT = "clacker-fyi/0.1 by saad"
-S3_BUCKET = "clacker-fyi-images"
-S3_REGION = "us-east-1"
+S3_BUCKET = os.environ.get("S3_BUCKET", "")
+S3_REGION = os.environ.get("S3_REGION", "us-east-1")
+if not S3_BUCKET:
+    # Try loading from .env file in project root
+    env_path = os.path.join(os.path.dirname(__file__), "..", ".env")
+    if os.path.exists(env_path):
+        with open(env_path) as _f:
+            for _line in _f:
+                _line = _line.strip()
+                if _line and not _line.startswith("#") and "=" in _line:
+                    _k, _v = _line.split("=", 1)
+                    os.environ.setdefault(_k.strip(), _v.strip())
+        S3_BUCKET = os.environ.get("S3_BUCKET", "")
+        S3_REGION = os.environ.get("S3_REGION", "us-east-1")
+    if not S3_BUCKET:
+        sys.exit("Error: S3_BUCKET not set. Add it to .env or export it.")
 S3_BASE_URL = f"https://{S3_BUCKET}.s3.amazonaws.com"
 MAX_LONG_SIDE = 2560
 THUMB_LONG_SIDE = 768

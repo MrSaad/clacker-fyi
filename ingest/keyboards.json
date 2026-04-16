@@ -1428,7 +1428,7 @@
       "sound_profile": "thocky",
       "build_tier": "endgame",
       "aesthetic": [
-        "BoW",
+        "WoB",
         "stealth",
         "minimal"
       ],
@@ -2102,7 +2102,7 @@
       "build_tier": "endgame",
       "aesthetic": [
         "smoke",
-        "BoW",
+        "WoB",
         "minimal"
       ],
       "typing_feel": "linear",
@@ -2621,7 +2621,7 @@
       "sound_profile": null,
       "build_tier": "endgame",
       "aesthetic": [
-        "BoW",
+        "WoB",
         "minimal"
       ],
       "typing_feel": null,

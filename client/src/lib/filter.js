@@ -1,15 +1,17 @@
 // Pure filter pipeline: search terms (AND across comma-separated tokens) +
-// facet selections. Facet semantics:
-//   - within a single facet group: OR
-//   - across facet groups: AND
+// attribute and component selections.
 //
-// selectedFacets shape:
+// Selection semantics:
+//   - within a single group: OR
+//   - across groups (including across the attributes/components split): AND
+//
+// selections shape:
 //   {
-//     inferred: { sound_profile: Set, build_tier: Set, ... },
-//     brands:   { switch_brand: Set, keycap_brand: Set, case_brand: Set },
+//     attributes: { sound_profile: Set, build_tier: Set, ... },
+//     components: { switch_brand: Set, keycap_brand: Set, ... },
 //   }
 
-import { INFERRED_FACETS, BRAND_GROUPS } from './facets.js';
+import { ATTRIBUTE_GROUPS, COMPONENT_GROUPS } from './filter-groups.js';
 
 export function parseSearchInput(input) {
   return (input || '')
@@ -19,18 +21,18 @@ export function parseSearchInput(input) {
 }
 
 export function emptySelections() {
-  const inferred = {};
-  for (const f of INFERRED_FACETS) inferred[f.key] = new Set();
-  const brands = {};
-  for (const g of BRAND_GROUPS) brands[g.key] = new Set();
-  return { inferred, brands };
+  const attributes = {};
+  for (const g of ATTRIBUTE_GROUPS) attributes[g.key] = new Set();
+  const components = {};
+  for (const g of COMPONENT_GROUPS) components[g.key] = new Set();
+  return { attributes, components };
 }
 
-function matchesInferred(kb, selectedInferred) {
-  for (const facet of INFERRED_FACETS) {
-    const sel = selectedInferred[facet.key];
+function matchesAttributes(kb, selected) {
+  for (const group of ATTRIBUTE_GROUPS) {
+    const sel = selected[group.key];
     if (!sel || sel.size === 0) continue;
-    const v = kb.inferred?.[facet.key];
+    const v = kb.inferred?.[group.key];
     if (v == null) return false;
     const values = Array.isArray(v) ? v : [v];
     let any = false;
@@ -45,13 +47,13 @@ function matchesInferred(kb, selectedInferred) {
   return true;
 }
 
-function matchesBrands(kb, selectedBrands) {
-  for (const group of BRAND_GROUPS) {
-    const sel = selectedBrands[group.key];
+function matchesComponents(kb, selected) {
+  for (const group of COMPONENT_GROUPS) {
+    const sel = selected[group.key];
     if (!sel || sel.size === 0) continue;
     let any = false;
     for (const brand of sel) {
-      if (kb._brands[group.key].has(brand)) {
+      if (kb._components[group.key].has(brand)) {
         any = true;
         break;
       }
@@ -72,7 +74,7 @@ export function applyFilters(keyboards, terms, selections) {
   return keyboards.filter(
     (kb) =>
       matchesSearch(kb, terms) &&
-      matchesInferred(kb, selections.inferred) &&
-      matchesBrands(kb, selections.brands)
+      matchesAttributes(kb, selections.attributes) &&
+      matchesComponents(kb, selections.components)
   );
 }

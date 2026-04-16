@@ -258,7 +258,7 @@ E = {
         "parts": {"case": "RAMA x Ion Zenith", "switches": "Boba U4T Blacks",
                   "keycaps": "GMK WoB + GMK Stealth Rama artisans",
                   "cable": "Keebstuff Lemo Amboss x KAT Iron"},
-        "inferred": {"sound_profile": "thocky", "build_tier": "endgame", "aesthetic": ["BoW", "stealth", "minimal"],
+        "inferred": {"sound_profile": "thocky", "build_tier": "endgame", "aesthetic": ["WoB", "stealth", "minimal"],
                      "typing_feel": "tactile", "build_complexity": "stock", "confidence": "high"},
     },
     "mvj8ly": {
@@ -374,7 +374,7 @@ E = {
                   "pcb": "hineybush h88",
                   "switches": "Gateron Ink v2 (Tribosys 3204, films)", "stabilizers": "Durock",
                   "keycaps": "GMK WoB + icons + Cherry relegendables", "cable": "coaxius fixed Lemo"},
-        "inferred": {"sound_profile": "thocky", "build_tier": "endgame", "aesthetic": ["smoke", "BoW", "minimal"],
+        "inferred": {"sound_profile": "thocky", "build_tier": "endgame", "aesthetic": ["smoke", "WoB", "minimal"],
                      "typing_feel": "linear", "build_complexity": "heavy-mod", "confidence": "high"},
     },
     "mwt5i8": {
@@ -433,7 +433,7 @@ E = {
     },
     "i3smx4": {
         "parts": {"case": "Iron165", "keycaps": "GMK WoB"},
-        "inferred": {"sound_profile": None, "build_tier": "endgame", "aesthetic": ["BoW", "minimal"],
+        "inferred": {"sound_profile": None, "build_tier": "endgame", "aesthetic": ["WoB", "minimal"],
                      "typing_feel": None, "build_complexity": None, "confidence": "low"},
     },
     "m0mn7p": {

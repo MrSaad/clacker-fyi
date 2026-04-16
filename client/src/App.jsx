@@ -1,9 +1,9 @@
 import { useEffect, useMemo, useState, useCallback } from 'react';
 import { fetchKeyboards } from './lib/api.js';
-import { annotateKeyboards, buildFacetIndex } from './lib/facets.js';
+import { annotateKeyboards, buildFilterIndex } from './lib/filter-groups.js';
 import { applyFilters, parseSearchInput, emptySelections } from './lib/filter.js';
 import Header from './components/Header.jsx';
-import FacetSidebar from './components/FacetSidebar.jsx';
+import FilterSidebar from './components/FilterSidebar.jsx';
 import KeyboardGrid from './components/KeyboardGrid.jsx';
 import DetailModal from './components/DetailModal.jsx';
 
@@ -43,8 +43,8 @@ export default function App() {
       .catch((e) => setError(e.message));
   }, []);
 
-  const facetIndex = useMemo(
-    () => (keyboards ? buildFacetIndex(keyboards) : null),
+  const filterIndex = useMemo(
+    () => (keyboards ? buildFilterIndex(keyboards) : null),
     [keyboards]
   );
 
@@ -55,11 +55,11 @@ export default function App() {
     return applyFilters(keyboards, terms, selections);
   }, [keyboards, terms, selections]);
 
-  const toggleFacet = useCallback((kind, group, value) => {
+  const toggleFilter = useCallback((kind, group, value) => {
     setSelections((prev) => {
       const next = {
-        inferred: { ...prev.inferred },
-        brands: { ...prev.brands },
+        attributes: { ...prev.attributes },
+        components: { ...prev.components },
       };
       const set = new Set(next[kind][group]);
       if (set.has(value)) set.delete(value);
@@ -90,10 +90,10 @@ export default function App() {
         onOpenFilters={() => setFiltersOpen(true)}
       />
       <main className="mx-auto flex w-full max-w-[1600px] flex-1 gap-6 px-4 py-4 md:px-6">
-        <FacetSidebar
-          facetIndex={facetIndex}
+        <FilterSidebar
+          filterIndex={filterIndex}
           selections={selections}
-          onToggle={toggleFacet}
+          onToggle={toggleFilter}
           onClear={clearAll}
           mobileOpen={filtersOpen}
           onMobileClose={() => setFiltersOpen(false)}

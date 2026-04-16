@@ -1,7 +1,7 @@
 import { useState } from 'react';
-import { INFERRED_FACETS, BRAND_GROUPS } from '../lib/facets.js';
+import { ATTRIBUTE_GROUPS, COMPONENT_GROUPS } from '../lib/filter-groups.js';
 
-function FacetGroup({ label, options, selected, onToggle }) {
+function FilterSection({ label, options, selected, onToggle }) {
   const [open, setOpen] = useState(true);
   if (!options || options.length === 0) return null;
   return (
@@ -41,30 +41,30 @@ function FacetGroup({ label, options, selected, onToggle }) {
   );
 }
 
-export default function FacetSidebar({
-  facetIndex,
+export default function FilterSidebar({
+  filterIndex,
   selections,
   onToggle,
   onClear,
   mobileOpen,
   onMobileClose,
 }) {
-  if (!facetIndex) return <aside className="hidden w-56 shrink-0 lg:block" />;
+  if (!filterIndex) return <aside className="hidden w-56 shrink-0 lg:block" />;
 
   const groups = [
-    ...INFERRED_FACETS.map((f) => ({
-      kind: 'inferred',
-      key: f.key,
-      label: f.label,
-      options: facetIndex.inferred[f.key],
-      selected: selections.inferred[f.key],
-    })),
-    ...BRAND_GROUPS.map((g) => ({
-      kind: 'brands',
+    ...ATTRIBUTE_GROUPS.map((g) => ({
+      kind: 'attributes',
       key: g.key,
       label: g.label,
-      options: facetIndex.brands[g.key],
-      selected: selections.brands[g.key],
+      options: filterIndex.attributes[g.key],
+      selected: selections.attributes[g.key],
+    })),
+    ...COMPONENT_GROUPS.map((g) => ({
+      kind: 'components',
+      key: g.key,
+      label: g.label,
+      options: filterIndex.components[g.key],
+      selected: selections.components[g.key],
     })),
   ];
 
@@ -93,7 +93,7 @@ export default function FacetSidebar({
         </div>
       </div>
       {groups.map((g) => (
-        <FacetGroup
+        <FilterSection
           key={`${g.kind}.${g.key}`}
           label={g.label}
           options={g.options}

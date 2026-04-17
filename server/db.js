@@ -9,7 +9,6 @@ let db;
 export function openDb() {
   if (db) return db;
   db = new Database(DB_PATH, { readonly: false });
-  db.pragma('journal_mode = WAL');
   db.pragma('foreign_keys = ON');
   return db;
 }

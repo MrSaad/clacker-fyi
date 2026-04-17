@@ -35,16 +35,10 @@ export default function DetailModal({ keyboard, onClose }) {
     };
   }, [onClose]);
 
-  const inferred = keyboard.inferred || {};
-  const parts = keyboard.parts || {};
-  const partRows = Object.entries(PART_LABELS).filter(([k]) => parts[k]);
-  const tags = [
-    inferred.sound_profile,
-    inferred.build_tier,
-    inferred.typing_feel,
-    inferred.build_complexity,
-    ...(inferred.aesthetic || []),
-  ].filter(Boolean);
+  const components = keyboard.components || {};
+  const attributes = keyboard.attributes || {};
+  const partRows = Object.entries(PART_LABELS).filter(([k]) => components[k]);
+  const tags = Object.values(attributes).flat().filter(Boolean);
 
   return (
     <div
@@ -158,7 +152,7 @@ export default function DetailModal({ keyboard, onClose }) {
                     <dt className="text-xs uppercase tracking-wide text-sol-base1">
                       {label}
                     </dt>
-                    <dd className="text-sol-base01">{parts[k]}</dd>
+                    <dd className="text-sol-base01">{components[k]}</dd>
                   </div>
                 ))}
               </dl>

@@ -23,3 +23,7 @@ npm-debug.log*
 __pycache__/
 *.pyc
 .venv/
+
+# sqlite transient sidecars (the .db itself is committed)
+*.db-wal
+*.db-shm

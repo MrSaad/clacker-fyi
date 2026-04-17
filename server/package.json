@@ -5,10 +5,11 @@
   "type": "module",
   "main": "index.js",
   "scripts": {
-    "dev": "nodemon --watch index.js --watch data index.js",
+    "dev": "nodemon --watch index.js --watch db.js --watch ../data index.js",
     "start": "node index.js"
   },
   "dependencies": {
+    "better-sqlite3": "^12.9.0",
     "cors": "^2.8.5",
     "express": "^4.21.1"
   },

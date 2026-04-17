@@ -3,15 +3,9 @@
 //
 // Selection semantics:
 //   - within a single group: OR
-//   - across groups (including across the attributes/components split): AND
+//   - across groups: AND
 //
-// selections shape:
-//   {
-//     attributes: { sound_profile: Set, build_tier: Set, ... },
-//     components: { switch_brand: Set, keycap_brand: Set, ... },
-//   }
-
-import { ATTRIBUTE_GROUPS, COMPONENT_GROUPS } from './filter-groups.js';
+// selections shape: { attributes: { <at.key>: Set }, components: { <ct.key>: Set } }
 
 export function parseSearchInput(input) {
   return (input || '')
@@ -20,43 +14,37 @@ export function parseSearchInput(input) {
     .filter(Boolean);
 }
 
-export function emptySelections() {
+export function emptySelections(taxonomy) {
   const attributes = {};
-  for (const g of ATTRIBUTE_GROUPS) attributes[g.key] = new Set();
+  for (const at of taxonomy?.attribute_types || []) attributes[at.key] = new Set();
   const components = {};
-  for (const g of COMPONENT_GROUPS) components[g.key] = new Set();
+  for (const ct of taxonomy?.component_types || []) components[ct.key] = new Set();
   return { attributes, components };
 }
 
-function matchesAttributes(kb, selected) {
-  for (const group of ATTRIBUTE_GROUPS) {
-    const sel = selected[group.key];
+function matchesAttributes(kb, selected, taxonomy) {
+  for (const at of taxonomy.attribute_types) {
+    const sel = selected[at.key];
     if (!sel || sel.size === 0) continue;
-    const v = kb.inferred?.[group.key];
-    if (v == null) return false;
-    const values = Array.isArray(v) ? v : [v];
+    const values = kb.attributes?.[at.key] || [];
     let any = false;
-    for (const val of values) {
-      if (sel.has(val)) {
-        any = true;
-        break;
-      }
+    for (const v of values) {
+      if (sel.has(v)) { any = true; break; }
     }
     if (!any) return false;
   }
   return true;
 }
 
-function matchesComponents(kb, selected) {
-  for (const group of COMPONENT_GROUPS) {
-    const sel = selected[group.key];
+function matchesComponents(kb, selected, taxonomy) {
+  for (const ct of taxonomy.component_types) {
+    const sel = selected[ct.key];
     if (!sel || sel.size === 0) continue;
+    const set = kb._components?.[ct.key];
+    if (!set) return false;
     let any = false;
     for (const brand of sel) {
-      if (kb._components[group.key].has(brand)) {
-        any = true;
-        break;
-      }
+      if (set.has(brand)) { any = true; break; }
     }
     if (!any) return false;
   }
@@ -64,17 +52,15 @@ function matchesComponents(kb, selected) {
 }
 
 function matchesSearch(kb, terms) {
-  for (const t of terms) {
-    if (!kb._search.includes(t)) return false;
-  }
+  for (const t of terms) if (!kb._search.includes(t)) return false;
   return true;
 }
 
-export function applyFilters(keyboards, terms, selections) {
+export function applyFilters(keyboards, terms, selections, taxonomy) {
   return keyboards.filter(
     (kb) =>
       matchesSearch(kb, terms) &&
-      matchesAttributes(kb, selections.attributes) &&
-      matchesComponents(kb, selections.components)
+      matchesAttributes(kb, selections.attributes, taxonomy) &&
+      matchesComponents(kb, selections.components, taxonomy)
   );
 }

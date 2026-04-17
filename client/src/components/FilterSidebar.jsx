@@ -1,5 +1,4 @@
 import { useState } from 'react';
-import { ATTRIBUTE_GROUPS, COMPONENT_GROUPS } from '../lib/filter-groups.js';
 
 function FilterSection({ label, options, selected, onToggle }) {
   const [open, setOpen] = useState(true);
@@ -42,6 +41,7 @@ function FilterSection({ label, options, selected, onToggle }) {
 }
 
 export default function FilterSidebar({
+  taxonomy,
   filterIndex,
   selections,
   onToggle,
@@ -49,22 +49,23 @@ export default function FilterSidebar({
   mobileOpen,
   onMobileClose,
 }) {
-  if (!filterIndex) return <aside className="hidden w-56 shrink-0 lg:block" />;
+  if (!taxonomy || !filterIndex || !selections)
+    return <aside className="hidden w-56 shrink-0 lg:block" />;
 
   const groups = [
-    ...ATTRIBUTE_GROUPS.map((g) => ({
+    ...taxonomy.attribute_types.map((at) => ({
       kind: 'attributes',
-      key: g.key,
-      label: g.label,
-      options: filterIndex.attributes[g.key],
-      selected: selections.attributes[g.key],
+      key: at.key,
+      label: at.label,
+      options: filterIndex.attributes[at.key],
+      selected: selections.attributes[at.key],
     })),
-    ...COMPONENT_GROUPS.map((g) => ({
+    ...taxonomy.component_types.map((ct) => ({
       kind: 'components',
-      key: g.key,
-      label: g.label,
-      options: filterIndex.components[g.key],
-      selected: selections.components[g.key],
+      key: ct.key,
+      label: ct.label,
+      options: filterIndex.components[ct.key],
+      selected: selections.components[ct.key],
     })),
   ];
 
@@ -107,14 +108,12 @@ export default function FilterSidebar({
 
   return (
     <>
-      {/* Desktop sidebar */}
       <aside className="hidden w-56 shrink-0 lg:block">
         <div className="fancy-scroll sticky top-4 max-h-[calc(100vh-32px)] overflow-y-auto pr-2">
           {inner}
         </div>
       </aside>
 
-      {/* Mobile drawer */}
       <div
         className={`fixed inset-0 z-40 lg:hidden ${mobileOpen ? '' : 'pointer-events-none'}`}
         aria-hidden={!mobileOpen}

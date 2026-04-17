@@ -1,5 +1,5 @@
 import { useEffect, useMemo, useState, useCallback } from 'react';
-import { fetchKeyboards } from './lib/api.js';
+import { fetchKeyboards, fetchTaxonomy } from './lib/api.js';
 import { annotateKeyboards, buildFilterIndex } from './lib/filter-groups.js';
 import { applyFilters, parseSearchInput, emptySelections } from './lib/filter.js';
 import Header from './components/Header.jsx';
@@ -9,9 +9,10 @@ import DetailModal from './components/DetailModal.jsx';
 
 export default function App() {
   const [keyboards, setKeyboards] = useState(null);
+  const [taxonomy, setTaxonomy] = useState(null);
   const [error, setError] = useState(null);
   const [searchInput, setSearchInput] = useState('');
-  const [selections, setSelections] = useState(() => emptySelections());
+  const [selections, setSelections] = useState(null);
   const [selected, setSelected] = useState(null);
   const [filtersOpen, setFiltersOpen] = useState(false);
 
@@ -34,26 +35,28 @@ export default function App() {
   }, [filtersOpen]);
 
   useEffect(() => {
-    fetchKeyboards()
-      .then((data) => {
+    Promise.all([fetchKeyboards(), fetchTaxonomy()])
+      .then(([data, tax]) => {
         annotateKeyboards(data);
         data.sort((a, b) => (b.score || 0) - (a.score || 0));
+        setTaxonomy(tax);
+        setSelections(emptySelections(tax));
         setKeyboards(data);
       })
       .catch((e) => setError(e.message));
   }, []);
 
   const filterIndex = useMemo(
-    () => (keyboards ? buildFilterIndex(keyboards) : null),
-    [keyboards]
+    () => (keyboards && taxonomy ? buildFilterIndex(keyboards, taxonomy) : null),
+    [keyboards, taxonomy]
   );
 
   const terms = useMemo(() => parseSearchInput(searchInput), [searchInput]);
 
   const filtered = useMemo(() => {
-    if (!keyboards) return [];
-    return applyFilters(keyboards, terms, selections);
-  }, [keyboards, terms, selections]);
+    if (!keyboards || !taxonomy || !selections) return [];
+    return applyFilters(keyboards, terms, selections, taxonomy);
+  }, [keyboards, taxonomy, selections, terms]);
 
   const toggleFilter = useCallback((kind, group, value) => {
     setSelections((prev) => {
@@ -70,9 +73,9 @@ export default function App() {
   }, []);
 
   const clearAll = useCallback(() => {
-    setSelections(emptySelections());
+    if (taxonomy) setSelections(emptySelections(taxonomy));
     setSearchInput('');
-  }, []);
+  }, [taxonomy]);
 
   if (error) {
     return (
@@ -91,6 +94,7 @@ export default function App() {
       />
       <main className="mx-auto flex w-full max-w-[1600px] flex-1 gap-6 px-4 py-4 md:px-6">
         <FilterSidebar
+          taxonomy={taxonomy}
           filterIndex={filterIndex}
           selections={selections}
           onToggle={toggleFilter}

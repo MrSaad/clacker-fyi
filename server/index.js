@@ -1,31 +1,37 @@
 import express from 'express';
 import cors from 'cors';
-import fs from 'node:fs';
 import path from 'node:path';
 import { fileURLToPath } from 'node:url';
+import {
+  getAllKeyboards,
+  getKeyboardById,
+  getTaxonomy,
+  countKeyboards,
+} from './db.js';
 
 const __dirname = path.dirname(fileURLToPath(import.meta.url));
 const PORT = process.env.PORT || 3001;
 const isProd = process.env.NODE_ENV === 'production';
 
-const dataPath = path.join(__dirname, 'data', 'keyboards.json');
-const keyboards = JSON.parse(fs.readFileSync(dataPath, 'utf8'));
-console.log(`[server] loaded ${keyboards.length} keyboards from ${dataPath}`);
-
 const app = express();
-
-app.use(
-  cors({
-    origin: isProd ? false : ['http://localhost:5173'],
-  })
-);
+app.use(cors({ origin: isProd ? false : ['http://localhost:5173'] }));
 
 app.get('/api/health', (_req, res) => {
-  res.json({ ok: true, count: keyboards.length });
+  res.json({ ok: true, count: countKeyboards() });
 });
 
 app.get('/api/keyboards', (_req, res) => {
-  res.json(keyboards);
+  res.json(getAllKeyboards());
+});
+
+app.get('/api/keyboards/:id', (req, res) => {
+  const kb = getKeyboardById(req.params.id);
+  if (!kb) return res.status(404).json({ error: 'not found' });
+  res.json(kb);
+});
+
+app.get('/api/taxonomy', (_req, res) => {
+  res.json(getTaxonomy());
 });
 
 if (isProd) {
